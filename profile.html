@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>My Profile - Sahna Service Point Matrimony</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="top-header">
+    <div class="logo">
+      Sahna Service Point Matrimony
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">My Profile</a>
+      <a href="login.html">Logout</a>
+    </nav>
+  </header>
+
+
+  <!-- PROFILE PAGE -->
+  <main class="profile-page">
+
+<div class="profile-icon">
+    <img
+        id="profilePhoto"
+        src=""
+        alt="Profile Photo"
+    >
+</div>
+   <div class="profile-title">
+    <h1>My Profile</h1>
+
+    <p class="profile-subtitle">
+        अपनी Matrimonial Profile की जानकारी भरें
+    </p>
+</div>
+
+
+      <form id="profileForm">
+
+        <!-- NAME -->
+        <div class="form-group">
+          <label for="fullName">पूरा नाम</label>
+
+ <input
+  type="text"
+  id="fullName"
+  placeholder="अपना पूरा नाम लिखें"
+  required
+>    </div>
+
+
+        <!-- EMAIL -->
+        <div class="form-group">
+          <label for="email">ईमेल आईडी</label>
+
+          <input
+            type="email"
+            id="email"
+            readonly
+          >
+        </div>
+
+
+        <!-- MOBILE -->
+        <div class="form-group">
+          <label for="mobile">मोबाइल नंबर</label>
+
+         <input
+  type="tel"
+  id="mobile"
+  placeholder="अपना मोबाइल नंबर"
+>
+        </div>
+
+
+       <!-- GENDER -->
+<div class="form-group">
+  <label for="gender">👤 लिंग</label>
+
+  <select id="gender">
+    <option value="">लिंग चुनें</option>
+    <option value="Male">पुरुष</option>
+    <option value="Female">महिला</option>
+    <option value="Other">अन्य</option>
+  </select>
+</div>
+       
+
+        <!-- DATE OF BIRTH -->
+        <div class="form-group">
+          <label for="dob"> जन्म तारीख</label>
+
+          <input
+            type="date"
+            id="dateOfBirth"
+          >
+        </div>
+
+
+        <!-- CITY -->
+        <div class="form-group">
+          <label for="city">शहर</label>
+
+          <input
+            type="text"
+            id="city"
+            placeholder="अपना शहर"
+          >
+        </div>
+
+
+        <!-- OCCUPATION -->
+        <div class="form-group">
+          <label for="occupation">व्यवसाय</label>
+
+          <input
+            type="text"
+            id="occupation"
+            placeholder="जैसे Teacher, Business, Job"
+          >
+        </div>
+
+
+        <!-- ABOUT -->
+        <div class="form-group">
+          <label for="about">अपने बारे में</label>
+
+          <textarea
+            id="about"
+            rows="6"
+            placeholder="अपने बारे में कुछ लिखें..."
+          ></textarea>
+        </div>
+
+<!-- PROFILE PHOTO -->
+<div class="form-group">
+  <label for="photoFile">प्रोफाइल फोटो</label>
+  <input
+    type="file"
+    id="photoFile"
+    accept="image/*"
+  >
+</div>
+
+        <!-- SAVE BUTTON -->
+        <button
+          type="submit"
+          class="profile-save-btn"
+        >
+          Profile Save करें
+        </button>
+
+      </form>
+
+    </div>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Sahna Service Point Matrimony
+  </footer>
+
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="app.js"></script>
+
+
+ <!-- PROFILE JAVASCRIPT -->
+<script>
+
+async function loadProfile() {
+
+  const profileForm = document.getElementById("profileForm");
+
+  while (!window.supabaseClient) {
+    await new Promise(resolve => setTimeout(resolve, 100));
+  }
+
+  const {
+    data: { user },
+    error
+  } = await window.supabaseClient.auth.getUser();
+
+  if (error || !user) {
+    alert("पहले Login करें।");
+    window.location.href = "login.html";
+    return;
+  }
+
+  document.getElementById("email").value = user.email;
+
+  const {
+    data,
+    error: profileError
+  } = await window.supabaseClient
+    .from("profiles")
+    .select("*")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileError) {
+    console.log("Profile अभी database में नहीं है।");
+    return;
+  }
+
+  if (data) {
+
+    document.getElementById("fullName").value =
+      data.full_name || "";
+
+    document.getElementById("mobile").value =
+      data.mobile || "";
+
+    document.getElementById("gender").value =
+      data.gender || "";
+
+    document.getElementById("dateOfBirth").value =
+      data.date_of_birth || "";
+
+    document.getElementById("city").value =
+      data.city || "";
+
+    document.getElementById("occupation").value =
+      data.occupation || "";
+
+document.getElementById("about").value =
+    data.about || "";
+
+document.getElementById("profilePhoto").src =
+    data.photo_url || "";
+  }
+}
+
+
+/* ================================
+   SAVE PROFILE + UPLOAD PHOTO
+================================ */
+
+document
+  .getElementById("profileForm")
+  .addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    if (!window.supabaseClient) {
+      alert("Supabase connect नहीं हुआ।");
+      return;
+    }
+
+    const {
+      data: { user },
+      error: userError
+    } = await window.supabaseClient.auth.getUser();
+
+    if (userError || !user) {
+      alert("पहले Login करें।");
+      window.location.href = "login.html";
+      return;
+    }
+
+
+    /* ================================
+       PHOTO UPLOAD
+    ================================= */
+
+    let photoUrl = null;
+
+    const photoFile =
+      document.getElementById("photoFile").files[0];
+
+    if (photoFile) {
+
+      const fileExtension =
+        photoFile.name.split(".").pop();
+
+      const fileName =
+        user.id + "-" + Date.now() + "." + fileExtension;
+
+      const filePath =
+        fileName;
+
+
+      const {
+        error: uploadError
+      } =
+        await window.supabaseClient
+          .storage
+          .from("profile-photos")
+          .upload(
+            filePath,
+            photoFile,
+            {
+              cacheControl: "3600",
+              upsert: true
+            }
+          );
+
+
+      if (uploadError) {
+
+        console.error(uploadError);
+
+        alert(
+          "फोटो Upload नहीं हुई: " +
+          uploadError.message
+        );
+
+        return;
+      }
+
+
+      /* Public photo URL */
+
+      const {
+        data: publicUrlData
+      } =
+        window.supabaseClient
+          .storage
+          .from("profile-photos")
+          .getPublicUrl(filePath);
+
+
+      photoUrl =
+        publicUrlData.publicUrl;
+    }
+
+
+    /* ================================
+       PROFILE DATA
+    ================================= */
+
+    const profileData = {
+
+      id: user.id,
+
+      full_name:
+        document
+          .getElementById("fullName")
+          .value
+          .trim(),
+
+      email:
+        user.email,
+
+      mobile:
+        document
+          .getElementById("mobile")
+          .value
+          .trim(),
+
+      gender:
+        document
+          .getElementById("gender")
+          .value,
+
+      date_of_birth:
+        document
+          .getElementById("dateOfBirth")
+          .value || null,
+
+      city:
+        document
+          .getElementById("city")
+          .value
+          .trim(),
+
+      occupation:
+        document
+          .getElementById("occupation")
+          .value
+          .trim(),
+
+      about:
+        document
+          .getElementById("about")
+          .value
+          .trim()
+    };
+
+
+    /* फोटो URL केवल तब जोड़ें
+       जब नई फोटो चुनी गई हो */
+
+    if (photoUrl) {
+      profileData.photo_url = photoUrl;
+    }
+
+
+    /* ================================
+       SAVE TO DATABASE
+    ================================= */
+
+    const { error } =
+      await window.supabaseClient
+        .from("profiles")
+        .upsert(profileData);
+
+
+    if (error) {
+
+      console.error(error);
+
+      alert(
+        "Profile save नहीं हुई: " +
+        error.message
+      );
+
+      return;
+    }
+
+
+    alert(
+      "Profile और Photo सफलतापूर्वक Save हो गए ❤️"
+    );
+
+    location.reload();
+
+  });
+
+
+/* Page खुलते ही profile load */
+loadProfile();
+
+</script>
+
+</body>
+</html>

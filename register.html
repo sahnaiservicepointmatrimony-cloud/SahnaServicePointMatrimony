@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Sahna Service Point Matrimony</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header class="navbar">
+ <div class="logo">
+  Sahna Service Point Matrimony
+</div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="login.html">Login</a>
+  </nav>
+</header>
+
+<main class="form-container">
+
+  <h1>Create Your Matrimonial Profile</h1>
+  <p>अपनी प्रोफाइल बनाने के लिए नीचे जानकारी भरें।</p>
+
+  <form id="registerForm">
+
+    <label>पूरा नाम</label>
+    <input type="text" id="full_name" placeholder="पूरा नाम" required>
+
+    <label>ईमेल</label>
+    <input type="email" id="email" placeholder="ईमेल आईडी" required>
+
+    <label>मोबाइल नंबर</label>
+    <input type="tel" id="phone" placeholder="मोबाइल नंबर" required>
+
+    <label>पासवर्ड</label>
+    <input type="password" id="password" placeholder="पासवर्ड" required>
+
+    <label>लिंग</label>
+    <select id="gender" required>
+      <option value="">लिंग चुनें</option>
+      <option value="Male">पुरुष</option>
+      <option value="Female">महिला</option>
+      <option value="Other">अन्य</option>
+    </select>
+
+    <label>जन्म तारीख</label>
+    <input type="date" id="date_of_birth" required>
+
+    <label>शहर</label>
+    <input type="text" id="city" placeholder="शहर">
+
+    <label>व्यवसाय</label>
+    <input type="text" id="occupation" placeholder="व्यवसाय">
+
+    <label>अपने बारे में</label>
+    <textarea id="about" placeholder="अपने बारे में लिखें"></textarea>
+
+    <button type="submit">Register Now</button>
+
+  </form>
+
+  <p>
+    पहले से अकाउंट है?
+    <a href="login.html">Login करें</a>
+  </p>
+
+</main>
+
+<footer>
+  <p>© 2026 Sahna Service Point Matrimony</p>
+</footer>
+
+<script src="app.js"></script>
+
+</body>
+</html>

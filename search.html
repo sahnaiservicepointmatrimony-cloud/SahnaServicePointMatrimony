@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>जीवनसाथी खोजें - Sahna Service Point Matrimony</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .search-page {
+      min-height: 80vh;
+      padding: 50px 20px;
+      background: linear-gradient(135deg, #fff7fb, #fff1f5, #fffaf2);
+    }
+
+    .search-title {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .search-title h1 {
+      color: #7b1745;
+      margin-bottom: 8px;
+    }
+
+    .search-title p {
+      color: #666;
+    }
+
+    .profiles-grid {
+      max-width: 1100px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+    }
+
+    .profile-card {
+      background: white;
+      border-radius: 20px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(120, 0, 60, 0.12);
+      border: 1px solid #f3d6e3;
+    }
+
+    .profile-photo {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 15px;
+      border-radius: 50%;
+      background: #f7d2e2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 50px;
+      color: #b52b68;
+      overflow: hidden;
+    }
+
+    .profile-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-card h2 {
+      text-align: center;
+      color: #7b1745;
+      margin-bottom: 15px;
+    }
+
+    .profile-info {
+      line-height: 1.9;
+      color: #555;
+    }
+
+    .view-btn {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      padding: 12px;
+      background: #c92d72;
+      color: white;
+      text-decoration: none;
+      border-radius: 25px;
+    }
+
+    .view-btn:hover {
+      background: #a91f5c;
+    }
+
+    .loading {
+      text-align: center;
+      color: #777;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="top-header">
+    <div class="brand">
+      Sahna Service Point Matrimony
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">My Profile</a>
+      <a href="login.html">Login</a>
+    </nav>
+  </header>
+
+  <main class="search-page">
+
+    <div class="search-title">
+      <h1>💖 जीवनसाथी खोजें</h1>
+      <p>अपने लिए सही जीवनसाथी की प्रोफाइल देखें</p>
+    </div>
+
+<div class="search-filters">
+
+  <select id="genderFilter">
+    <option value="">सभी लिंग</option>
+    <option value="Male">पुरुष</option>
+    <option value="Female">महिला</option>
+  </select>
+
+  <input type="text" id="cityFilter" placeholder="शहर लिखें">
+
+  <input type="text" id="occupationFilter" placeholder="व्यवसाय लिखें">
+
+  <button id="searchFilterBtn">🔎 खोजें</button>
+
+</div>
+    <div id="profilesContainer" class="profiles-grid">
+      <div class="loading">
+        Profiles लोड हो रही हैं...
+      </div>
+    </div>
+
+  </main>
+
+  <footer>
+    © 2026 Sahna Service Point Matrimony
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "https://gqohlbnnsxatjyyacjhm.supabase.co";
+    const SUPABASE_KEY = "sb_publishable_I-MvPhhHQsexbJIN-ueawA_5oxdJhsJ";
+
+    const supabaseClient = window.supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+    async function loadProfiles() {
+
+      const container = document.getElementById("profilesContainer");
+
+const gender = document.getElementById("genderFilter").value;
+const city = document.getElementById("cityFilter").value.trim();
+const occupation = document.getElementById("occupationFilter").value.trim();
+
+let query = supabaseClient
+  .from("profiles")
+  .select("*");
+
+if (gender) {
+  query = query.eq("gender", gender);
+}
+
+if (city) {
+  query = query.ilike("city", `%${city}%`);
+}
+
+if (occupation) {
+  query = query.ilike("occupation", `%${occupation}%`);
+}
+
+const { data, error } = await query
+  .order("created_at", { ascending: false });
+
+      if (error) {
+        container.innerHTML =
+          "<p class='loading'>Profiles लोड नहीं हो सकीं।</p>";
+        console.log(error);
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        container.innerHTML =
+          "<p class='loading'>अभी कोई Profile उपलब्ध नहीं है।</p>";
+        return;
+      }
+
+      container.innerHTML = "";
+
+      data.forEach(profile => {
+
+        const card = document.createElement("div");
+        card.className = "profile-card";
+
+        const photo = profile.photo_url
+          ? `<img src="${profile.photo_url}" alt="Profile Photo">`
+          : "👤";
+
+        card.innerHTML = `
+          <div class="profile-photo">
+            ${photo}
+          </div>
+
+          <h2>${profile.full_name || "नाम उपलब्ध नहीं"}</h2>
+
+          <div class="profile-info">
+            <div>👤 लिंग: ${profile.gender || "—"}</div>
+            <div>🎂 जन्म तारीख: ${profile.date_of_birth || "—"}</div>
+            <div>📍 शहर: ${profile.city || "—"}</div>
+            <div>💼 व्यवसाय: ${profile.occupation || "—"}</div>
+          </div>
+           <div class="profile-about">
+  📝 ${profile.about || "अपने बारे में जानकारी उपलब्ध नहीं है।"}
+</div>
+
+          <a class="view-btn"
+             href="view-profile.html?id=${profile.id}">
+             पूरी Profile देखें
+          </a>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+document.getElementById("searchFilterBtn").addEventListener("click", loadProfiles);
+
+    loadProfiles();
+  </script>
+
+</body>
+</html>

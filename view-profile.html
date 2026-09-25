@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>View Profile - Sahna Service Point Matrimony</title>
+
+  <link rel="stylesheet" href="style.css">
+<style>
+.view-profile-page {
+  background: linear-gradient(135deg, #fff7fb, #fff1f5, #fffaf2);
+  min-height: 80vh;
+  padding: 50px 25px;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 30px;
+}
+
+.view-profile-card {
+  width: 650px;
+  background: white;
+  border-radius: 25px;
+  padding: 35px;
+  box-shadow: 0 15px 40px rgba(120, 0, 60, 0.15);
+  text-align: center;
+}
+
+.view-profile-photo {
+  width: 170px;
+  height: 170px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 6px solid #f3b4d0;
+  padding: 5px;
+  background: white;
+  box-shadow: 0 8px 25px rgba(120, 0, 60, 0.18);
+  margin-bottom: 15px;
+}
+
+.view-profile-card h1 {
+  color: #7b1745;
+  margin: 5px 0 8px;
+  font-size: 32px;
+}
+
+.view-profile-subtitle {
+  color: #777;
+  margin-bottom: 15px;
+}
+
+.verified-profile {
+  display: inline-block;
+  background: #ffe5f0;
+  color: #a51d60;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-weight: bold;
+  margin-bottom: 25px;
+}
+
+.profile-details {
+  text-align: left;
+  background: #fff7fa;
+  border-radius: 18px;
+  padding: 22px;
+}
+
+.profile-detail {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px 5px;
+  border-bottom: 1px solid #f0dce5;
+}
+
+.profile-detail:last-child {
+  border-bottom: none;
+}
+
+.profile-detail span {
+  color: #777;
+}
+
+.profile-detail strong {
+  color: #333;
+  text-align: right;
+}
+
+.profile-about {
+  margin-top: 25px;
+  text-align: left;
+  background: #fff0f5;
+  padding: 20px;
+  border-radius: 18px;
+}
+
+.profile-about h2 {
+  color: #7b1745;
+  margin-top: 0;
+}
+
+.profile-about p {
+  color: #555;
+  line-height: 1.7;
+}
+
+.back-home-btn {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 12px 25px;
+  background: #c52b78;
+  color: white;
+  text-decoration: none;
+  border-radius: 25px;
+}
+
+/* Right Romantic Section */
+
+.profile-romantic-side {
+  width: 380px;
+  background: linear-gradient(145deg, #fff, #fff0f6);
+  border-radius: 25px;
+  padding: 35px;
+  box-shadow: 0 15px 40px rgba(120, 0, 60, 0.12);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 520px;
+}
+
+.romantic-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.romantic-heart {
+  font-size: 55px;
+  color: #c52b78;
+}
+
+.romantic-badge {
+  background: #ffe4ef;
+  color: #a51d60;
+  padding: 10px 15px;
+  border-radius: 20px;
+  font-weight: bold;
+}
+
+.romantic-main {
+  text-align: center;
+}
+
+.romantic-main h2 {
+  color: #7b1745;
+  font-size: 38px;
+  margin-bottom: 5px;
+}
+
+.romantic-main h3 {
+  color: #c52b78;
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.romantic-main p {
+  color: #777;
+  line-height: 1.8;
+}
+
+.romantic-bottom {
+  text-align: center;
+  background: white;
+  padding: 18px;
+  border-radius: 18px;
+  color: #7b1745;
+}
+
+.romantic-bottom p {
+  color: #777;
+  margin-bottom: 0;
+}
+
+/* Mobile */
+
+@media (max-width: 900px) {
+  .view-profile-page {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .view-profile-card,
+  .profile-romantic-side {
+    width: 100%;
+    max-width: 650px;
+    box-sizing: border-box;
+  }
+}
+</style>
+</head>
+
+<body>
+
+  <!-- Header -->
+  <header class="top-header">
+
+    <div class="logo">
+      Sahna Service Point Matrimony
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="profile.html">My Profile</a>
+      <a href="login.html">Logout</a>
+    </nav>
+
+  </header>
+
+
+  <!-- View Profile -->
+  <main class="view-profile-page">
+
+    <div class="view-profile-card">
+
+     <img id="profilePhoto" class="view-profile-photo" src="" alt="Profile Photo">
+
+      <h1 id="profileName">Profile</h1>
+
+      <p class="view-profile-subtitle">
+        Matrimonial Profile
+      </p>
+<div class="verified-profile">
+  ✓ Verified Profile
+<div class="profile-actions">
+
+  <button class="shortlist-btn" onclick="addToShortlist()">
+    ❤️ Shortlist करें
+  </button>
+
+  <button class="contact-btn" onclick="contactProfile()">
+    💬 Contact करें
+  </button>
+
+</div>
+
+      <div class="profile-details">
+
+        <div class="profile-detail">
+          <span>लिंग</span>
+          <strong id="profileGender">-</strong>
+        </div>
+
+        <div class="profile-detail">
+          <span>जन्म तारीख</span>
+          <strong id="profileDob">-</strong>
+        </div>
+
+        <div class="profile-detail">
+          <span>शहर</span>
+          <strong id="profileCity">-</strong>
+        </div>
+
+        <div class="profile-detail">
+          <span>व्यवसाय</span>
+          <strong id="profileOccupation">-</strong>
+        </div>
+
+        <div class="profile-detail">
+          <span>मोबाइल नंबर</span>
+          <strong id="profileMobile">-</strong>
+        </div>
+
+        <div class="profile-detail">
+          <span>ईमेल आईडी</span>
+          <strong id="profileEmail">-</strong>
+        </div>
+
+      </div>
+
+
+      <div class="profile-about">
+
+        <h2>अपने बारे में</h2>
+
+        <p id="profileAbout">
+          जानकारी उपलब्ध नहीं है।
+        </p>
+
+      </div>
+
+
+      <a href="index.html" class="back-home-btn">
+        ← Home पर जाएँ
+      </a>
+
+    </div>
+
+<div class="profile-romantic-side">
+
+    <div class="romantic-top">
+        <span class="romantic-heart">♡</span>
+        <span class="romantic-badge">💗 Special Profile</span>
+    </div>
+
+    <div class="romantic-main">
+        <h2>सच्चे रिश्ते</h2>
+        <h3>जीवनभर का साथ</h3>
+        <p>
+            सही जीवनसाथी की तलाश में<br>
+            एक कदम और आगे बढ़ें
+        </p>
+    </div>
+
+     
+    <div class="romantic-bottom">
+        <strong>💍 जीवनसाथी की तलाश</strong>
+        <p>Right Partner • Brighter Tomorrow</p>
+    </div>
+
+</div>
+
+  </main>
+
+
+  <!-- Footer -->
+  <footer>
+    © 2026 Sahna Service Point Matrimony
+  </footer>
+
+
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script src="app.js"></script>
+
+
+  <script>
+
+    async function loadViewProfile() {
+
+      /* Supabase तैयार होने का इंतजार */
+      while (!window.supabaseClient) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+      }
+
+
+      /* URL से profile ID लेना */
+      const params = new URLSearchParams(window.location.search);
+
+      const profileId = params.get("id");
+
+
+      if (!profileId) {
+
+        alert("Profile ID नहीं मिली।");
+
+        window.location.href = "index.html";
+
+        return;
+      }
+
+
+      /* Supabase से profile लेना */
+
+      const { data, error } =
+        await window.supabaseClient
+          .from("profiles")
+          .select("*")
+          .eq("id", profileId)
+          .maybeSingle();
+
+
+      if (error) {
+
+        console.error(error);
+
+        alert("Profile load नहीं हो सकी।");
+
+        return;
+      }
+
+
+      if (!data) {
+
+        alert("Profile नहीं मिली।");
+
+        return;
+      }
+
+
+      /* Profile की जानकारी दिखाना */
+
+      document.getElementById("profileName").textContent =
+        data.full_name || "Profile";
+document.getElementById("profilePhoto").src =
+  data.photo_url || "";
+
+
+      document.getElementById("profileGender").textContent =
+        data.gender || "-";
+
+
+      document.getElementById("profileDob").textContent =
+        data.date_of_birth || "-";
+
+
+      document.getElementById("profileCity").textContent =
+        data.city || "-";
+
+
+      document.getElementById("profileOccupation").textContent =
+        data.occupation || "-";
+
+
+      document.getElementById("profileMobile").textContent =
+        data.mobile || "-";
+
+
+      document.getElementById("profileEmail").textContent =
+        data.email || "-";
+
+
+      document.getElementById("profileAbout").textContent =
+        data.about || "जानकारी उपलब्ध नहीं है।";
+
+    }
+
+
+    /* Page खुलते ही profile load करें */
+    loadViewProfile();
+
+  </script>
+
+</body>
+</html>

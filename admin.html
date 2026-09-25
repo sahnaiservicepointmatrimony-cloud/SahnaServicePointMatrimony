@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Panel - Sahna Service Point Matrimony</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <style>
+    .admin-page {
+      min-height: 80vh;
+      padding: 40px 20px;
+      background: linear-gradient(135deg, #fff7fb, #fff1f5);
+    }
+
+    .admin-title {
+      text-align: center;
+      color: #7b1745;
+      margin-bottom: 30px;
+    }
+
+    .admin-container {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .admin-card {
+      background: white;
+      border-radius: 20px;
+      padding: 25px;
+      margin-bottom: 20px;
+      box-shadow: 0 10px 30px rgba(120, 0, 60, 0.12);
+      border: 1px solid #f3d6e3;
+    }
+
+    .admin-photo {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      object-fit: cover;
+      display: block;
+      margin-bottom: 15px;
+      background: #f7d2e2;
+    }
+
+    .admin-card h2 {
+      color: #7b1745;
+      margin-bottom: 10px;
+    }
+
+    .admin-info {
+      line-height: 1.9;
+      color: #555;
+    }
+
+    .admin-status {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 6px 15px;
+      border-radius: 20px;
+      background: #f7d2e2;
+      color: #7b1745;
+    }
+
+    .logout-admin {
+      display: block;
+      width: 180px;
+      margin: 30px auto;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      background: #c92d72;
+      color: white;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .loading,
+    .error-message {
+      text-align: center;
+      padding: 30px;
+      color: #777;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="top-header">
+
+    <div class="brand">
+      Sahna Service Point Matrimony
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="search.html">Profiles</a>
+      <a href="logout.html">Logout</a>
+    </nav>
+
+  </header>
+
+
+  <!-- ADMIN PAGE -->
+  <main class="admin-page">
+
+    <div class="admin-container">
+
+      <div class="admin-title">
+        <h1>👑 Admin Panel</h1>
+        <p>सभी Matrimonial Profiles</p>
+      </div>
+
+
+      <div id="adminMessage" class="loading">
+        Profiles लोड हो रही हैं...
+      </div>
+
+
+      <div id="adminProfiles"></div>
+
+
+      <button
+        class="logout-admin"
+        onclick="window.location.href='logout.html'">
+        Logout
+      </button>
+
+    </div>
+
+  </main>
+
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Sahna Service Point Matrimony
+  </footer>
+
+
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://gqohlbnnsxatjyyacjhm.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_I-MvPhhHQsexbJIN-ueawA_5oxdJhsJ";
+
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    const ADMIN_EMAIL = "sahnaiservicepointmatrimony@gmail.com";
+    async function loadAdminProfiles() {
+
+      const message =
+        document.getElementById("adminMessage");
+
+      const container =
+        document.getElementById("adminProfiles");
+
+
+      /* LOGIN CHECK */
+
+      const {
+        data: { user },
+        error: userError
+      } =
+        await supabaseClient.auth.getUser();
+
+
+      if (userError || !user) {
+
+        alert("पहले Login करें।");
+
+        window.location.href =
+          "login.html";
+
+        return;
+      }
+if (user.email !== ADMIN_EMAIL) {
+
+  alert("आप Admin नहीं हैं।");
+
+  window.location.href =
+    "index.html";
+
+  return;
+}
+
+      /* PROFILES LOAD */
+
+      const {
+        data,
+        error
+      } =
+        await supabaseClient
+          .from("profiles")
+          .select("*")
+          .order("created_at", {
+            ascending: false
+          });
+
+
+      if (error) {
+
+        console.error(error);
+
+        message.innerHTML =
+          "Profiles लोड नहीं हो सकीं।";
+
+        return;
+      }
+
+
+      if (!data || data.length === 0) {
+
+        message.innerHTML =
+          "अभी कोई Profile नहीं है।";
+
+        return;
+      }
+
+
+      message.innerHTML =
+        "कुल Profiles: " + data.length;
+
+
+      container.innerHTML = "";
+
+
+      data.forEach(profile => {
+
+        const card =
+          document.createElement("div");
+
+        card.className =
+          "admin-card";
+
+
+        const photo =
+          profile.photo_url ||
+          "";
+
+
+        card.innerHTML = `
+
+          ${
+            photo
+            ? `<img
+                 class="admin-photo"
+                 src="${photo}"
+                 alt="Profile Photo">`
+            : `<div class="admin-photo">
+                 👤
+               </div>`
+          }
+
+
+          <h2>
+            ${profile.full_name || "नाम उपलब्ध नहीं"}
+          </h2>
+
+
+          <div class="admin-info">
+
+            <div>
+              👤 लिंग:
+              ${profile.gender || "—"}
+            </div>
+
+            <div>
+              📧 Email:
+              ${profile.email || "—"}
+            </div>
+
+            <div>
+              📱 Mobile:
+              ${profile.mobile || "—"}
+            </div>
+
+            <div>
+              🎂 जन्म तारीख:
+              ${profile.date_of_birth || "—"}
+            </div>
+
+            <div>
+              📍 शहर:
+              ${profile.city || "—"}
+            </div>
+
+            <div>
+              💼 व्यवसाय:
+              ${profile.occupation || "—"}
+            </div>
+
+            <div>
+              📝 About:
+              ${profile.about || "—"}
+            </div>
+
+          </div>
+
+
+          <div class="admin-status">
+            ✓ Profile उपलब्ध है
+          </div>
+          <button class="delete-btn" onclick="deleteProfile('${profile.id}')">
+        🗑️ Profile Delete करें
+         </button>
+        `;
+
+
+        container.appendChild(card);
+
+      });
+
+    }
+
+
+    loadAdminProfiles();
+async function deleteProfile(profileId) {
+
+  const confirmDelete = confirm("क्या आप यह Profile Delete करना चाहते हैं?");
+
+  if (!confirmDelete) {
+    return;
+  }
+
+  const { error } = await supabaseClient
+    .from("profiles")
+    .delete()
+    .eq("id", profileId);
+
+  if (error) {
+    alert("Profile Delete नहीं हुई: " + error.message);
+    console.log(error);
+    return;
+  }
+
+  alert("Profile सफलतापूर्वक Delete हो गई ❤️");
+
+  loadAdminProfiles();
+}
+
+  </script>
+
+</body>
+
+</html>

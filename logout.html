@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Logout - Sahna Service Point Matrimony</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <main style="text-align:center; padding:100px 20px;">
+
+    <h1>Logout हो रहा है...</h1>
+
+    <p>कृपया थोड़ा इंतजार करें।</p>
+
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://gqohlbnnsxatjyyacjhm.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_I-MvPhhHQsexbJIN-ueawA_5oxdJhsJ";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+    async function logout() {
+
+      const { error } =
+        await supabaseClient.auth.signOut();
+
+      if (error) {
+
+        alert("Logout नहीं हुआ: " + error.message);
+
+        return;
+      }
+
+      window.location.href = "login.html";
+    }
+
+    logout();
+
+  </script>
+
+</body>
+</html>
