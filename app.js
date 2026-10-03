@@ -115,15 +115,22 @@ if (registerForm) {
 
     e.preventDefault();
 
-    const emailInput = registerForm.querySelector('input[type="email"]');
-    const passwordInput = registerForm.querySelector('input[type="password"]');
-    const button = registerForm.querySelector('button[type="submit"]');
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-    const email = emailInput.value.trim();
-    const password = passwordInput.value;
+    const fullName = document.getElementById("full_name").value.trim();
+    const mobile = document.getElementById("phone").value.trim();
+    const gender = document.getElementById("gender").value;
+    const dateOfBirth = document.getElementById("date_of_birth").value;
+    const city = document.getElementById("city").value.trim();
+    const occupation = document.getElementById("occupation").value.trim();
+    const about = document.getElementById("about").value.trim();
 
-    if (!email || !password) {
-      alert("कृपया Email और Password भरें।");
+    const button =
+      registerForm.querySelector('button[type="submit"]');
+
+    if (!email || !password || !fullName || !mobile || !gender || !dateOfBirth) {
+      alert("कृपया सभी जरूरी जानकारी भरें।");
       return;
     }
 
@@ -134,6 +141,7 @@ if (registerForm) {
 
     try {
 
+      // 1. Supabase Authentication
       const { data, error } =
         await window.supabaseClient.auth.signUp({
           email: email,
@@ -152,13 +160,55 @@ if (registerForm) {
         return;
       }
 
-      alert("Registration सफल हुआ ❤️");
+      const user = data.user;
+
+      if (!user) {
+        alert("Account बना है। कृपया Email verification पूरा करें।");
+
+        if (button) {
+          button.disabled = false;
+          button.textContent = "Register Now";
+        }
+
+        return;
+      }
+
+      // 2. Profile database में save करें
+      const { error: profileError } =
+        await window.supabaseClient
+          .from("profiles")
+          .upsert({
+            id: user.id,
+            full_name: fullName,
+            email: email,
+            mobile: mobile,
+            gender: gender,
+            date_of_birth: dateOfBirth || null,
+            city: city,
+            occupation: occupation,
+            about: about
+          });
+
+      if (profileError) {
+        console.error(profileError);
+        alert("Account बन गया लेकिन Profile save नहीं हुई: " + profileError.message);
+
+        if (button) {
+          button.disabled = false;
+          button.textContent = "Register Now";
+        }
+
+        return;
+      }
+
+      alert("Registration और Profile सफलतापूर्वक बन गई ❤️");
 
       window.location.href = "login.html";
 
     } catch (err) {
 
       console.error(err);
+
       alert("Registration करते समय समस्या हुई।");
 
       if (button) {
@@ -166,6 +216,10 @@ if (registerForm) {
         button.textContent = "Register Now";
       }
     }
+
+  });
+
+}
 
   });
 
